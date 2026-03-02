@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #050508;
+  --foreground: #f0f0f6;
 }
 
 @theme inline {
@@ -12,15 +12,39 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0a0a14;
+}
+::-webkit-scrollbar-thumb {
+  background: #4c2a85;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #6d3dd4;
+}
+
+/* Slide-in animation for toasts */
+@keyframes slide-in-from-right-5 {
+  from { transform: translateX(1.25rem); opacity: 0; }
+  to   { transform: translateX(0);       opacity: 1; }
+}
+.animate-in {
+  animation: slide-in-from-right-5 0.2s ease-out forwards;
+}
+
