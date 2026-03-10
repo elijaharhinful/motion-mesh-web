@@ -36,7 +36,7 @@ interface Props {
 
 export default function EditVideoPage({ params }: Props) {
   return (
-    <ProtectedPage requiredRole={UserRole.CREATOR}>
+    <ProtectedPage requireCreator>
       <EditVideoForm params={params} />
     </ProtectedPage>
   );

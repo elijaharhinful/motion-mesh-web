@@ -17,7 +17,7 @@ export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const authed = isAuthenticated();
-  const isCreator = user?.role === UserRole.CREATOR || user?.role === UserRole.ADMIN;
+  const isCreator = user?.creatorProfile != null || user?.role === UserRole.ADMIN;
 
   const handleLogout = () => {
     logout(undefined, { onSuccess: () => router.push('/') });

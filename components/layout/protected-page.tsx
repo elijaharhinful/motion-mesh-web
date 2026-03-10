@@ -8,9 +8,10 @@ import { useEffect } from 'react';
 interface ProtectedPageProps {
   children: React.ReactNode;
   requiredRole?: UserRole;
+  requireCreator?: boolean;
 }
 
-export function ProtectedPage({ children, requiredRole }: ProtectedPageProps) {
+export function ProtectedPage({ children, requiredRole, requireCreator }: ProtectedPageProps) {
   const { user, isAuthenticated } = useAuthStore();
   const router = useRouter();
 
@@ -21,11 +22,17 @@ export function ProtectedPage({ children, requiredRole }: ProtectedPageProps) {
     }
     if (requiredRole && user?.role !== requiredRole && user?.role !== UserRole.ADMIN) {
       router.replace('/');
+      return;
     }
-  }, [isAuthenticated, user, requiredRole, router]);
+    if (requireCreator && !user?.creatorProfile && user?.role !== UserRole.ADMIN) {
+      router.replace('/creators');
+      return;
+    }
+  }, [isAuthenticated, user, requiredRole, requireCreator, router]);
 
   if (!isAuthenticated()) return null;
   if (requiredRole && user?.role !== requiredRole && user?.role !== UserRole.ADMIN) return null;
+  if (requireCreator && !user?.creatorProfile && user?.role !== UserRole.ADMIN) return null;
 
   return <>{children}</>;
 }

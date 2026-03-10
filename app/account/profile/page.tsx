@@ -93,7 +93,7 @@ function ProfileForm() {
 
           <div className="pt-2">
             <div className="flex items-center gap-3 p-3 rounded-xl bg-white/3 border border-white/10 mb-4">
-              <span className="text-xs px-2.5 py-1 rounded-full bg-violet-500/15 text-violet-300 border border-violet-500/20 capitalize">{user?.role}</span>
+              <span className="text-xs px-2.5 py-1 rounded-full bg-violet-500/15 text-violet-300 border border-violet-500/20 capitalize">{user?.creatorProfile ? 'creator' : user?.role?.toLowerCase()}</span>
               <span className="text-white/40 text-xs">
                 {user?.isEmailVerified ? '✓ Email verified' : '⚠ Email not verified'}
               </span>

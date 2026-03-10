@@ -33,7 +33,7 @@ type FormData = {
 
 export default function NewVideoPage() {
   return (
-    <ProtectedPage requiredRole={UserRole.CREATOR}>
+    <ProtectedPage requireCreator>
       <NewVideoForm />
     </ProtectedPage>
   );

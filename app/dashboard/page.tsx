@@ -15,7 +15,7 @@ import {
 
 export default function DashboardPage() {
   return (
-    <ProtectedPage requiredRole={UserRole.CREATOR}>
+    <ProtectedPage requireCreator>
       <DashboardContent />
     </ProtectedPage>
   );
@@ -87,7 +87,7 @@ function DashboardContent() {
         ].map((stat) => (
           <div
             key={stat.label}
-            className={`bg-gradient-to-br ${stat.color} border rounded-2xl p-6`}
+            className={`bg-linear-to-br ${stat.color} border rounded-2xl p-6`}
           >
             <div className="flex items-center gap-3 mb-4">
               <stat.icon size={20} className={stat.iconColor} />

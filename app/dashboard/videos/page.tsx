@@ -14,7 +14,7 @@ import { useAuthStore } from '@/stores/auth.store';
 
 export default function DashboardVideosPage() {
   return (
-    <ProtectedPage requiredRole={UserRole.CREATOR}>
+    <ProtectedPage requireCreator>
       <VideoManagement />
     </ProtectedPage>
   );

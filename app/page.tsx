@@ -1,58 +1,66 @@
 import Link from 'next/link';
 import { ArrowRight, Sparkles, Shield, Zap } from 'lucide-react';
 import { FeaturedVideos } from './featured-videos';
+import { Hero3D } from '@/components/hero-3d';
 
 export default function HomePage() {
   return (
     <div className="overflow-hidden">
       {/* ── Hero ── */}
-      <section className="relative min-h-[90vh] flex items-center justify-center px-4 py-24">
+      <section className="relative min-h-[90vh] flex items-center px-4 py-20 lg:py-0">
         {/* Background glow */}
-        <div className="absolute inset-0 -z-10">
-          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-violet-600/20 rounded-full blur-[120px]" />
-          <div className="absolute top-1/3 left-1/3 w-[400px] h-[400px] bg-purple-600/10 rounded-full blur-[80px]" />
+        <div className="absolute inset-0 -z-10 overflow-hidden">
+          <div className="absolute top-1/4 -left-1/4 w-[800px] h-[500px] bg-violet-600/20 rounded-full blur-[120px]" />
+          <div className="absolute bottom-1/4 -right-1/4 w-[600px] h-[600px] bg-purple-600/10 rounded-full blur-[100px]" />
         </div>
 
-        <div className="max-w-5xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-violet-500/30 bg-violet-500/10 text-violet-300 text-xs font-medium mb-8 backdrop-blur-sm">
-            <Sparkles size={12} />
-            Powered by Kling AI
+        <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          
+          {/* Left Text Content */}
+          <div className="text-left z-10 pt-10 lg:pt-0">
+
+            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[4.5rem] font-black tracking-tight text-white leading-[1.05] mb-6">
+              See Yourself{' '}
+              <br className="hidden lg:block" />
+              <span className="bg-gradient-to-r from-violet-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                Dance
+              </span>{' '}
+              <br className="hidden lg:block" />
+              Like a Pro
+            </h1>
+
+            <p className="text-white/60 text-lg sm:text-xl max-w-xl leading-relaxed mb-10">
+              Buy a dance move from a professional choreographer. Upload one photo.
+              Get a stunning AI-generated video of <em className="text-violet-300">you</em> performing it — ready to share.
+            </p>
+
+            <div className="flex flex-col sm:flex-row items-center justify-start gap-4">
+              <Link
+                href="/browse"
+                className="group w-full sm:w-auto flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-violet-600 hover:bg-violet-500 text-white font-semibold text-base transition-all shadow-xl shadow-violet-500/30 hover:shadow-violet-500/50 hover:scale-105"
+              >
+                Browse Moves
+                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+              </Link>
+              <Link
+                href="/register"
+                className="group w-full sm:w-auto flex items-center justify-center gap-2 px-7 py-3.5 rounded-full border border-white/20 text-white/80 hover:text-white hover:border-white/40 font-semibold text-base transition-all hover:bg-white/5"
+              >
+                Start Creating
+              </Link>
+            </div>
+
+            {/* Social proof */}
+            <div className="mt-10 sm:mt-14 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 text-white/50 text-sm font-medium">
+              <span className="flex items-center gap-2"><span className="text-violet-400 text-lg">-</span> HD &amp; 4K output</span>
+              <span className="flex items-center gap-2"><span className="text-violet-400 text-lg">-</span> Ready in &lt; 5 min</span>
+              <span className="flex items-center gap-2"><span className="text-violet-400 text-lg">-</span> Auto-deleted</span>
+            </div>
           </div>
 
-          <h1 className="text-5xl sm:text-7xl font-black tracking-tight text-white leading-[0.95] mb-6">
-            See Yourself{' '}
-            <span className="bg-gradient-to-r from-violet-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-              Dance
-            </span>{' '}
-            Like a Pro
-          </h1>
-
-          <p className="text-white/60 text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed mb-10">
-            Buy a dance move from a professional choreographer. Upload one photo.
-            Get a stunning AI-generated video of <em>you</em> performing it — ready to share.
-          </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              href="/browse"
-              className="group flex items-center gap-2 px-7 py-3.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-semibold text-base transition-all shadow-xl shadow-violet-500/30 hover:shadow-violet-500/50 hover:scale-105"
-            >
-              Browse Moves
-              <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-            </Link>
-            <Link
-              href="/register"
-              className="px-7 py-3.5 rounded-xl border border-white/20 text-white/80 hover:text-white hover:border-white/40 font-semibold text-base transition-all hover:bg-white/5"
-            >
-              Start Creating
-            </Link>
-          </div>
-
-          {/* Social proof */}
-          <div className="mt-14 flex flex-col sm:flex-row items-center justify-center gap-8 text-white/40 text-sm">
-            <span>🎬 HD &amp; 4K output</span>
-            <span>⚡ Ready in under 5 min</span>
-            <span>🔒 Your photo is auto-deleted</span>
+          {/* Right 3D Content */}
+          <div className="relative w-full h-[500px] lg:h-[700px] z-0 order-first lg:order-last">
+            <Hero3D />
           </div>
         </div>
       </section>
