@@ -1,8 +1,17 @@
 @import "tailwindcss";
 
+/* Tell Tailwind v4 to use .dark class for dark: variants instead of @media (prefers-color-scheme: dark) */
+@custom-variant dark (&:is(.dark *));
+
 :root {
   --background: #050508;
   --foreground: #f0f0f6;
+}
+
+/* Light mode overrides — applied when ThemeProvider removes the .dark class */
+html:not(.dark) {
+  --background: #ffffff;
+  --foreground: #111111;
 }
 
 @theme inline {
@@ -10,6 +19,64 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-outfit: var(--font-outfit), Outfit, sans-serif;
+
+  /* Title text sizes — matches dashboard-sample exactly */
+  --text-title-2xl: 72px;
+  --text-title-2xl--line-height: 90px;
+  --text-title-xl: 60px;
+  --text-title-xl--line-height: 72px;
+  --text-title-lg: 48px;
+  --text-title-lg--line-height: 60px;
+  --text-title-md: 36px;
+  --text-title-md--line-height: 44px;
+  --text-title-sm: 30px;
+  --text-title-sm--line-height: 38px;
+  --text-theme-xl: 20px;
+  --text-theme-xl--line-height: 30px;
+  --text-theme-sm: 14px;
+  --text-theme-sm--line-height: 20px;
+  --text-theme-xs: 12px;
+  --text-theme-xs--line-height: 18px;
+
+  /* Brand palette (mapped to violet to match MotionMesh identity) */
+  --color-brand-25:  #f5f3ff;
+  --color-brand-50:  #ede9fe;
+  --color-brand-100: #ddd6fe;
+  --color-brand-200: #c4b5fd;
+  --color-brand-300: #a78bfa;
+  --color-brand-400: #8b5cf6;
+  --color-brand-500: #7c3aed;
+  --color-brand-600: #6d28d9;
+  --color-brand-700: #5b21b6;
+  --color-brand-800: #4c1d95;
+  --color-brand-900: #3b0764;
+  --color-brand-950: #160830;
+
+  /* Gray palette matching dashboard-sample */
+  --color-gray-25:  #fcfcfd;
+  --color-gray-50:  #f9fafb;
+  --color-gray-100: #f2f4f7;
+  --color-gray-200: #e4e7ec;
+  --color-gray-300: #d0d5dd;
+  --color-gray-400: #98a2b3;
+  --color-gray-500: #667085;
+  --color-gray-600: #475467;
+  --color-gray-700: #344054;
+  --color-gray-800: #1d2939;
+  --color-gray-900: #101828;
+  --color-gray-950: #0c111d;
+
+  /* Error / success palettes */
+  --color-error-25:  #fffbfa;
+  --color-error-50:  #fef3f2;
+  --color-error-500: #f04438;
+  --color-error-800: #912018;
+  --color-success-500: #12b76a;
+
+  /* Shadow utilities from dashboard-sample */
+  --shadow-theme-xs: 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
+  --shadow-theme-sm: 0px 1px 3px 0px rgba(16, 24, 40, 0.1), 0px 1px 2px 0px rgba(16, 24, 40, 0.06);
 }
 
 * {
@@ -19,9 +86,35 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-outfit), var(--font-geist-sans), Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+@utility no-scrollbar {
+  &::-webkit-scrollbar { display: none; }
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ── Sidebar menu utilities (from dashboard-sample globals.css) ──────────── */
+@utility menu-item {
+  @apply relative flex items-center w-full gap-3 px-3 py-2 font-medium rounded-lg text-sm;
+}
+@utility menu-item-active {
+  @apply bg-brand-50 text-brand-500 dark:bg-brand-500/[0.12] dark:text-brand-400;
+}
+@utility menu-item-inactive {
+  @apply text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-gray-300;
+}
+@utility menu-item-icon-active {
+  @apply text-brand-500 dark:text-brand-400;
+}
+@utility menu-item-icon-inactive {
+  @apply text-gray-500 group-hover:text-gray-700 dark:text-gray-400 dark:group-hover:text-gray-300;
+}
+@utility menu-item-text {
+  @apply truncate;
 }
 
 /* Custom scrollbar */

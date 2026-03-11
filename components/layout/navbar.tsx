@@ -8,6 +8,7 @@ import { UserRole } from '@/types/enums';
 import { Zap, Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
+import { ThemeToggleButton } from '@/components/common/ThemeToggleButton';
 
 export function Navbar() {
   const { user, isAuthenticated } = useAuthStore();
@@ -16,7 +17,7 @@ export function Navbar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const authed = isAuthenticated();
+  const authed = isAuthenticated;
   const isCreator = user?.creatorProfile != null || user?.role === UserRole.ADMIN;
 
   const handleLogout = () => {
@@ -26,7 +27,7 @@ export function Navbar() {
   const navLinks = [
     { href: '/browse', label: 'Browse' },
     ...(authed ? [{ href: '/account/purchases', label: 'My Library' }] : []),
-    ...(isCreator ? [{ href: '/dashboard', label: 'Dashboard' }] : []),
+    ...(authed ? [{ href: '/dashboard', label: 'Dashboard' }] : []),
   ];
 
   return (
@@ -61,8 +62,9 @@ export function Navbar() {
             ))}
           </div>
 
-          {/* Auth buttons */}
+          {/* Auth buttons + theme toggle */}
           <div className="hidden md:flex items-center gap-3">
+            <ThemeToggleButton />
             {authed ? (
               <div className="flex items-center gap-4">
                 <Link
@@ -121,6 +123,10 @@ export function Navbar() {
             </Link>
           ))}
           <div className="pt-3 border-t border-white/10 space-y-2">
+            <div className="flex items-center gap-2 py-1">
+              <ThemeToggleButton />
+              <span className="text-sm text-white/60">Toggle theme</span>
+            </div>
             {authed ? (
               <button onClick={handleLogout} className="w-full text-left py-2 text-white/70 hover:text-white">
                 Sign Out

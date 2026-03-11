@@ -1,0 +1,93 @@
+﻿
+> motion-mesh-web@0.1.0 lint C:\Users\Doxa\Desktop\web\motion-mesh\motion-mesh-web
+> eslint
+
+
+C:\Users\Doxa\Desktop\web\motion-mesh\motion-mesh-web\app\become-creator\page.tsx
+  53:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\Doxa\Desktop\web\motion-mesh\motion-mesh-web\app\creators\[id]\page.tsx
+   7:10  warning  'SkeletonGrid' is defined but never used  @typescript-eslint/no-unused-vars
+  10:8   warning  'Link' is defined but never used          @typescript-eslint/no-unused-vars
+
+C:\Users\Doxa\Desktop\web\motion-mesh\motion-mesh-web\app\dashboard\videos\[id]\edit\page.tsx
+  65:3   warning  Unused eslint-disable directive (no problems were reported from '@typescript-eslint/no-explicit-any')
+  67:38  error    Unexpected any. Specify a different type                                                               @typescript-eslint/no-explicit-any
+
+C:\Users\Doxa\Desktop\web\motion-mesh\motion-mesh-web\app\dashboard\videos\[id]\page.tsx
+  7:23  warning  'VideoCategory' is defined but never used    @typescript-eslint/no-unused-vars
+  7:38  warning  'VideoDifficulty' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\Doxa\Desktop\web\motion-mesh\motion-mesh-web\app\dashboard\videos\new\page.tsx
+  55:3   warning  Unused eslint-disable directive (no problems were reported from '@typescript-eslint/no-explicit-any')
+  57:38  error    Unexpected any. Specify a different type                                                               @typescript-eslint/no-explicit-any
+
+C:\Users\Doxa\Desktop\web\motion-mesh\motion-mesh-web\app\generate\[purchaseId]\page.tsx
+    9:56  warning  'AlertCircle' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         @typescript-eslint/no-unused-vars
+   36:30  error    Compilation Skipped: Existing memoization could not be preserved
+
+React Compiler has skipped optimizing this component because the existing manual memoization could not be preserved. The inferred dependencies did not match the manually specified dependencies, which could cause the value to change more or less frequently than expected. The inferred dependency was `handleFileSelect`, but the source dependencies were []. Inferred dependency not present in source.
+
+C:\Users\Doxa\Desktop\web\motion-mesh\motion-mesh-web\app\generate\[purchaseId]\page.tsx:36:30
+  34 |   };
+  35 |
+> 36 |   const onDrop = useCallback((e: React.DragEvent) => {
+     |                              ^^^^^^^^^^^^^^^^^^^^^^^^^
+> 37 |     e.preventDefault();
+     | ^^^^^^^^^^^^^^^^^^^^^^^
+> 38 |     setIsDragging(false);
+     | ^^^^^^^^^^^^^^^^^^^^^^^
+> 39 |     const f = e.dataTransfer.files[0];
+     | ^^^^^^^^^^^^^^^^^^^^^^^
+> 40 |     if (f) handleFileSelect(f);
+     | ^^^^^^^^^^^^^^^^^^^^^^^
+> 41 |   }, []);
+     | ^^^^ Could not preserve existing manual memoization
+  42 |
+  43 |   const handleGenerate = async () => {
+  44 |     if (!file || !purchaseId) return;  react-hooks/preserve-manual-memoization
+   41:6   warning  React Hook useCallback has a missing dependency: 'handleFileSelect'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           react-hooks/exhaustive-deps
+  125:13  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         @next/next/no-img-element
+
+C:\Users\Doxa\Desktop\web\motion-mesh\motion-mesh-web\app\register\page.tsx
+  89:40  warning  '_cp' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\Doxa\Desktop\web\motion-mesh\motion-mesh-web\app\videos\[id]\page.tsx
+  11:10  warning  'SkeletonCard' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\Doxa\Desktop\web\motion-mesh\motion-mesh-web\components\context\ThemeContext.tsx
+  26:5  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\Doxa\Desktop\web\motion-mesh\motion-mesh-web\components\context\ThemeContext.tsx:26:5
+  24 |     const initialTheme = savedTheme || 'dark'; // MotionMesh defaults to dark
+  25 |
+> 26 |     setTheme(initialTheme);
+     |     ^^^^^^^^ Avoid calling setState() directly within an effect
+  27 |     setIsInitialized(true);
+  28 |   }, []);
+  29 |  react-hooks/set-state-in-effect
+
+C:\Users\Doxa\Desktop\web\motion-mesh\motion-mesh-web\components\layout\AppSidebar.tsx
+   17:3  warning  'LogOut' is defined but never used                 @typescript-eslint/no-unused-vars
+  100:9  warning  'handleLogout' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\Doxa\Desktop\web\motion-mesh\motion-mesh-web\components\layout\navbar.tsx
+  21:9  warning  'isCreator' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\Doxa\Desktop\web\motion-mesh\motion-mesh-web\hooks\use-auth.ts
+   6:33  warning  'RefreshData' is defined but never used       @typescript-eslint/no-unused-vars
+  86:24  warning  'setAuth' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\Doxa\Desktop\web\motion-mesh\motion-mesh-web\stores\auth.store.ts
+  16:55  warning  'get' is defined but never used  @typescript-eslint/no-unused-vars
+
+Γ£û 22 problems (5 errors, 17 warnings)
+  0 errors and 2 warnings potentially fixable with the `--fix` option.
+
+ΓÇëELIFECYCLEΓÇë Command failed with exit code 1.

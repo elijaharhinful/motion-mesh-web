@@ -16,7 +16,7 @@ export function ProtectedPage({ children, requiredRole, requireCreator }: Protec
   const router = useRouter();
 
   useEffect(() => {
-    if (!isAuthenticated()) {
+    if (!isAuthenticated) {
       router.replace('/login');
       return;
     }
@@ -30,7 +30,7 @@ export function ProtectedPage({ children, requiredRole, requireCreator }: Protec
     }
   }, [isAuthenticated, user, requiredRole, requireCreator, router]);
 
-  if (!isAuthenticated()) return null;
+  if (!isAuthenticated) return null;
   if (requiredRole && user?.role !== requiredRole && user?.role !== UserRole.ADMIN) return null;
   if (requireCreator && !user?.creatorProfile && user?.role !== UserRole.ADMIN) return null;
 
