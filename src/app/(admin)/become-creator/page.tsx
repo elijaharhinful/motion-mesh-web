@@ -1,29 +1,32 @@
-import type { Metadata } from "next";
-import { Store } from "lucide-react";
-import PageBreadcrumb from "@/components/common/PageBreadCrumb";
-import PlaceholderPanel from "@/components/common/PlaceholderPanel";
+"use client";
 
-export const metadata: Metadata = {
-  title: "Become a Seller | MotionMesh",
-  description: "Unlock the seller workspace and license your dance templates.",
-};
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import PageBreadcrumb from "@/components/common/PageBreadCrumb";
+import { BecomeCreatorForm } from "@/components/creators/BecomeCreatorForm";
+import { useAuthStore } from "@/stores/auth.store";
 
 /**
- * Onboarding entry point. Buyer-only users reach this from the "Become a
- * Seller" CTA, or by deep-linking a seller route. The actual onboarding form
- * (which creates a CreatorProfile and unlocks seller mode without changing
- * role) is built in M2; this is the M1 shell destination.
+ * Seller onboarding entry point. Buyer-only users reach this from the "Become a
+ * Seller" CTA or by deep-linking a seller route. Users who are already sellers
+ * are sent straight to their dashboard.
  */
 export default function BecomeCreatorPage() {
+  const user = useAuthStore((s) => s.user);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user?.isSeller) router.replace("/dashboard");
+  }, [user?.isSeller, router]);
+
+  if (user?.isSeller) return null;
+
   return (
     <div>
       <PageBreadcrumb pageTitle="Become a Seller" />
-      <PlaceholderPanel
-        icon={<Store size={28} />}
-        title="Sell your choreography on MotionMesh"
-        description="Becoming a seller unlocks the seller workspace where you'll upload dance templates, manage listings, and earn 70% of every sale. The onboarding form is coming next."
-        comingIn="Seller onboarding arrives in M2"
-      />
+      <div className="mx-auto w-full max-w-2xl">
+        <BecomeCreatorForm />
+      </div>
     </div>
   );
 }

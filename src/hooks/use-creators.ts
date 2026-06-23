@@ -60,7 +60,11 @@ export function useApplyCreator() {
   const qc = useQueryClient();
 
   return useMutation({
-    mutationFn: async (body: { bio?: string; socialLink?: string }) => {
+    mutationFn: async (body: {
+      displayName: string;
+      bio?: string;
+      socialLink?: string;
+    }) => {
       const res = await apiClient.post<ApiResponse<CreatorProfile>>(
         "/creators/apply",
         body,
