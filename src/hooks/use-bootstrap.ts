@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAuthStore } from "@/stores/auth.store";
 import Cookies from "js-cookie";
 
@@ -10,12 +10,18 @@ const BASE_URL =
 export function useBootstrap() {
   const { setAuth, clearAuth, isAuthenticated } = useAuthStore();
   const [isBootstrapping, setIsBootstrapping] = useState(!isAuthenticated);
+  // The refresh token is single-use (rotated on the server). React StrictMode
+  // double-invokes effects in dev, which would fire two refreshes and log the
+  // user out on the second. Run the bootstrap exactly once.
+  const didRun = useRef(false);
 
   useEffect(() => {
     if (isAuthenticated) {
       setIsBootstrapping(false);
       return;
     }
+    if (didRun.current) return;
+    didRun.current = true;
 
     let cancelled = false;
 

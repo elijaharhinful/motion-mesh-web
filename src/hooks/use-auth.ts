@@ -154,3 +154,21 @@ export function useUpdateProfile() {
     },
   });
 }
+
+// ---------------------------------------------------------------------------
+// DELETE /users/me
+// ---------------------------------------------------------------------------
+
+export function useDeleteAccount() {
+  const { clearAuth } = useAuthStore();
+  const qc = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => apiClient.delete("/users/me"),
+    onSuccess: () => {
+      clearAuth();
+      Cookies.remove("mm_authed");
+      qc.clear();
+    },
+  });
+}

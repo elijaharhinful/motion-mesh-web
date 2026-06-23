@@ -2,16 +2,51 @@ import { useAuthStore } from "@/stores/auth.store";
 import { ApiError } from "@/types/api.types";
 
 const BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000/api/v1";
+  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001/api/v1";
 
 /**
- * Minimal fetch wrapper that:
- *   1. Injects the access token from Zustand authStore
- *   2. Sets credentials: 'include' for the HttpOnly refresh_token cookie
- *   3. Auto-retries once after calling POST /auth/refresh if a 401 is returned
+ * A single in-flight refresh shared across all callers. The backend rotates the
+ * refresh token (single-use), so concurrent refreshes would race and log the
+ * user out. De-duplicating to one refresh at a time prevents that.
+ */
+let refreshPromise: Promise<string | null> | null = null;
+
+function refreshAccessToken(): Promise<string | null> {
+  if (refreshPromise) return refreshPromise;
+
+  refreshPromise = (async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/auth/refresh`, {
+        method: "POST",
+        credentials: "include",
+      });
+      if (!res.ok) {
+        useAuthStore.getState().clearAuth();
+        return null;
+      }
+      const body = (await res.json()) as { data?: { accessToken?: string } };
+      const token = body?.data?.accessToken ?? null;
+      if (token) useAuthStore.getState().setAccessToken(token);
+      return token;
+    } catch {
+      useAuthStore.getState().clearAuth();
+      return null;
+    } finally {
+      refreshPromise = null;
+    }
+  })();
+
+  return refreshPromise;
+}
+
+/**
+ * Fetch wrapper that:
+ *   1. Injects the access token from the auth store
+ *   2. Sends credentials for the HttpOnly refresh_token cookie
+ *   3. On a 401, refreshes once (de-duplicated) and retries the request
  */
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
-  const { accessToken, setAccessToken } = useAuthStore.getState();
+  const { accessToken } = useAuthStore.getState();
 
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
@@ -29,38 +64,27 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   });
 
   if (res.status === 401 && !path.startsWith("/auth/")) {
-    const refreshRes = await fetch(`${BASE_URL}/auth/refresh`, {
-      method: "POST",
-      credentials: "include",
-    });
-
-    if (refreshRes.ok) {
-      const { data } = await refreshRes.json();
-      setAccessToken(data.accessToken);
-
-      headers["Authorization"] = `Bearer ${data.accessToken}`;
-
-      const retryRes = await fetch(`${BASE_URL}${path}`, {
-        ...options,
-        credentials: "include",
-        headers,
-      });
-
-      if (!retryRes.ok) {
-        const errBody = await retryRes.json().catch(() => ({}));
-        throw errBody as ApiError;
-      }
-
-      if (retryRes.status === 204) return undefined as T;
-      return retryRes.json() as Promise<T>;
-    } else {
-      // Refresh failed — clear auth state
-      useAuthStore.getState().clearAuth();
+    const token = await refreshAccessToken();
+    if (!token) {
       throw {
         statusCode: 401,
         message: "Session expired. Please log in again.",
       } as ApiError;
     }
+
+    headers["Authorization"] = `Bearer ${token}`;
+    const retryRes = await fetch(`${BASE_URL}${path}`, {
+      ...options,
+      credentials: "include",
+      headers,
+    });
+
+    if (!retryRes.ok) {
+      const errBody = await retryRes.json().catch(() => ({}));
+      throw errBody as ApiError;
+    }
+    if (retryRes.status === 204) return undefined as T;
+    return retryRes.json() as Promise<T>;
   }
 
   if (!res.ok) {
@@ -88,7 +112,7 @@ export const apiClient = {
     }),
   delete: <T>(path: string) => request<T>(path, { method: "DELETE" }),
 
-  /** Upload directly to S3 pre-signed URL (no auth headers sent to S3) */
+  /** Upload directly to an S3 pre-signed URL (no auth headers sent to S3). */
   uploadToS3: async (presignedUrl: string, file: File): Promise<void> => {
     const res = await fetch(presignedUrl, {
       method: "PUT",

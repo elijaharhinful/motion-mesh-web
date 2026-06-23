@@ -30,7 +30,7 @@ export function ModeSwitcher({ className }: { className?: string }) {
       <Link
         href="/become-creator"
         className={cn(
-          "text-sm px-3 py-1.5 rounded-lg border border-brand-500/40 text-brand-300 hover:border-brand-400 hover:text-brand-200 transition-all",
+          "text-sm font-medium px-3.5 py-2 rounded-lg border border-brand-500 text-brand-500 hover:bg-brand-50 dark:hover:bg-brand-500/10 transition-colors",
           className,
         )}
       >
@@ -51,15 +51,16 @@ export function ModeSwitcher({ className }: { className?: string }) {
 
   const base =
     "inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-md transition-colors";
-  const active = "bg-brand-600 text-white shadow-sm";
-  const inactive = "text-white/60 hover:text-white";
+  const active = "bg-brand-500 text-white shadow-sm";
+  const inactive =
+    "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white";
 
   return (
     <div
       role="group"
       aria-label="Workspace mode"
       className={cn(
-        "inline-flex items-center rounded-lg border border-white/15 bg-white/5 p-0.5",
+        "inline-flex items-center rounded-lg border border-gray-200 bg-gray-50 p-0.5 dark:border-gray-800 dark:bg-white/[0.03]",
         className,
       )}
     >

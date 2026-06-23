@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Input from "@/components/form/input/InputField";
@@ -9,6 +9,7 @@ import Button from "@/components/ui/button/Button";
 import { EyeCloseIcon, EyeIcon } from "@/icons";
 import { useLogin, useResendVerification } from "@/hooks/use-auth";
 import { useToastStore } from "@/stores/toast.store";
+import { useAuthStore } from "@/stores/auth.store";
 import { GoogleButton } from "@/components/auth/GoogleButton";
 import type { ApiError } from "@/types/api.types";
 
@@ -17,6 +18,12 @@ export default function LoginForm() {
   const { addToast } = useToastStore();
   const { mutate: login, isPending } = useLogin();
   const { mutate: resend, isPending: resending } = useResendVerification();
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+
+  // If already signed in (e.g. navigating Back to /login), bounce to the app.
+  useEffect(() => {
+    if (isAuthenticated) router.replace("/");
+  }, [isAuthenticated, router]);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
