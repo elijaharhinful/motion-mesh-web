@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Loader2, MailCheck, MailWarning, Mail } from "lucide-react";
@@ -18,9 +18,14 @@ export default function VerifyEmailView() {
   const { mutate: verify } = useVerifyEmail();
   const { mutate: resend, isPending: resending } = useResendVerification();
   const [status, setStatus] = useState<Status>(token ? "verifying" : "pending");
+  // Verification tokens are single-use. Guard against React StrictMode's
+  // double-invoked effect, which would consume the token twice (the second
+  // call would fail and wrongly show "expired").
+  const fired = useRef(false);
 
   useEffect(() => {
-    if (token) {
+    if (token && !fired.current) {
+      fired.current = true;
       verify(token, {
         onSuccess: () => setStatus("success"),
         onError: () => setStatus("error"),

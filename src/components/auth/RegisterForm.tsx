@@ -8,13 +8,11 @@ import Label from "@/components/form/Label";
 import Button from "@/components/ui/button/Button";
 import { EyeCloseIcon, EyeIcon } from "@/icons";
 import { useRegister } from "@/hooks/use-auth";
-import { useToastStore } from "@/stores/toast.store";
 import { GoogleButton } from "@/components/auth/GoogleButton";
 import type { ApiError } from "@/types/api.types";
 
 export default function RegisterForm() {
   const router = useRouter();
-  const { addToast } = useToastStore();
   const { mutate: register, isPending } = useRegister();
 
   const [firstName, setFirstName] = useState("");
@@ -22,9 +20,11 @@ export default function RegisterForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
     register(
       { firstName, lastName, email, password },
       {
@@ -32,7 +32,7 @@ export default function RegisterForm() {
           router.push(`/verify-email?email=${encodeURIComponent(email)}`),
         onError: (err) => {
           const e2 = err as unknown as ApiError;
-          addToast({ type: "error", title: e2.message || "Sign up failed" });
+          setError(e2.message || "Sign up failed. Please try again.");
         },
       },
     );
@@ -62,6 +62,12 @@ export default function RegisterForm() {
             </span>
           </div>
         </div>
+
+        {error && (
+          <div className="mb-5 rounded-lg border border-error-300 bg-error-50 p-3 text-sm text-error-600 dark:border-error-500/30 dark:bg-error-500/10 dark:text-error-400">
+            {error}
+          </div>
+        )}
 
         <form onSubmit={onSubmit}>
           <div className="space-y-5">

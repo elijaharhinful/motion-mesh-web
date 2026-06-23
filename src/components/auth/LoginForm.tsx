@@ -22,10 +22,12 @@ export default function LoginForm() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [needsVerify, setNeedsVerify] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setNeedsVerify(false);
+    setError(null);
     login(
       { email, password },
       {
@@ -35,7 +37,7 @@ export default function LoginForm() {
           if (e2.statusCode === 403) {
             setNeedsVerify(true);
           } else {
-            addToast({ type: "error", title: e2.message || "Login failed" });
+            setError(e2.message || "Invalid email or password.");
           }
         },
       },
@@ -66,6 +68,12 @@ export default function LoginForm() {
             </span>
           </div>
         </div>
+
+        {error && (
+          <div className="mb-5 rounded-lg border border-error-300 bg-error-50 p-3 text-sm text-error-600 dark:border-error-500/30 dark:bg-error-500/10 dark:text-error-400">
+            {error}
+          </div>
+        )}
 
         {needsVerify && (
           <div className="mb-5 rounded-lg border border-warning-300 bg-warning-50 p-4 text-sm text-warning-700 dark:border-warning-500/30 dark:bg-warning-500/10 dark:text-orange-400">

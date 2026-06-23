@@ -21,18 +21,17 @@ export default function ResetPasswordForm() {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
     if (password.length < 8) {
-      addToast({
-        type: "error",
-        title: "Password must be at least 8 characters.",
-      });
+      setError("Password must be at least 8 characters.");
       return;
     }
     if (password !== confirm) {
-      addToast({ type: "error", title: "Passwords do not match." });
+      setError("Passwords do not match.");
       return;
     }
     reset(
@@ -47,7 +46,7 @@ export default function ResetPasswordForm() {
         },
         onError: (err) => {
           const e2 = err as unknown as ApiError;
-          addToast({ type: "error", title: e2.message || "Reset failed" });
+          setError(e2.message || "This reset link is invalid or has expired.");
         },
       },
     );
@@ -75,6 +74,11 @@ export default function ResetPasswordForm() {
           </p>
         ) : (
           <form onSubmit={onSubmit}>
+            {error && (
+              <div className="mb-5 rounded-lg border border-error-300 bg-error-50 p-3 text-sm text-error-600 dark:border-error-500/30 dark:bg-error-500/10 dark:text-error-400">
+                {error}
+              </div>
+            )}
             <div className="space-y-5">
               <div>
                 <Label>
