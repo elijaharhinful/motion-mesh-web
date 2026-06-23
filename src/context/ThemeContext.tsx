@@ -19,10 +19,14 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
-    // This code will only run on the client side
+    // Sync the theme from localStorage on mount. This runs client-only and is
+    // intentional: rendering "light" first (matching SSR output) then updating
+    // here avoids a hydration mismatch. The set-state-in-effect rule flags this
+    // legitimate external-store sync as a false positive.
     const savedTheme = localStorage.getItem("theme") as Theme | null;
     const initialTheme = savedTheme || "light"; // Default to light theme
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setTheme(initialTheme);
     setIsInitialized(true);
   }, []);

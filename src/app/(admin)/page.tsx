@@ -1,42 +1,24 @@
-import type { Metadata } from "next";
-import { EcommerceMetrics } from "@/components/ecommerce/EcommerceMetrics";
-import React from "react";
-import MonthlyTarget from "@/components/ecommerce/MonthlyTarget";
-import MonthlySalesChart from "@/components/ecommerce/MonthlySalesChart";
-import StatisticsChart from "@/components/ecommerce/StatisticsChart";
-import RecentOrders from "@/components/ecommerce/RecentOrders";
-import DemographicCard from "@/components/ecommerce/DemographicCard";
+"use client";
 
-export const metadata: Metadata = {
-  title:
-    "Next.js E-commerce Dashboard | TailAdmin - Next.js Dashboard Template",
-  description: "This is Next.js Home for TailAdmin Dashboard Template",
-};
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useModeStore } from "@/stores/mode.store";
+import { ActiveMode } from "@/types/enums";
 
-export default function Ecommerce() {
-  return (
-    <div className="grid grid-cols-12 gap-4 md:gap-6">
-      <div className="col-span-12 space-y-6 xl:col-span-7">
-        <EcommerceMetrics />
+/**
+ * The authenticated landing route. It carries no content of its own — it sends
+ * the user to the home of their active workspace. Buyer is the default; sellers
+ * who left off in the seller workspace land on the seller dashboard. The active
+ * mode is UI state only and is never an authorization input (the target route's
+ * own guard still enforces capability). See Identity & Mode-Switching Spec §4.
+ */
+export default function WorkspaceHome() {
+  const mode = useModeStore((s) => s.mode);
+  const router = useRouter();
 
-        <MonthlySalesChart />
-      </div>
+  useEffect(() => {
+    router.replace(mode === ActiveMode.SELLER ? "/dashboard" : "/browse");
+  }, [mode, router]);
 
-      <div className="col-span-12 xl:col-span-5">
-        <MonthlyTarget />
-      </div>
-
-      <div className="col-span-12">
-        <StatisticsChart />
-      </div>
-
-      <div className="col-span-12 xl:col-span-5">
-        <DemographicCard />
-      </div>
-
-      <div className="col-span-12 xl:col-span-7">
-        <RecentOrders />
-      </div>
-    </div>
-  );
+  return null;
 }

@@ -39,7 +39,10 @@ const Calendar: React.FC = () => {
   };
 
   useEffect(() => {
-    // Initialize with some events
+    // Seed demo events on mount. Computed client-only (dates derive from the
+    // current time) to avoid an SSR/client hydration mismatch, so this
+    // external-data init legitimately lives in an effect.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setEvents([
       {
         id: "1",
@@ -99,7 +102,7 @@ const Calendar: React.FC = () => {
     } else {
       // Add new event
       const newEvent: CalendarEvent = {
-        id: Date.now().toString(),
+        id: crypto.randomUUID(),
         title: eventTitle,
         start: eventStartDate,
         end: eventEndDate,
