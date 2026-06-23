@@ -36,8 +36,8 @@ export function useLogin() {
 // ---------------------------------------------------------------------------
 
 export function useRegister() {
-  const { setAuth } = useAuthStore();
-
+  // Registration no longer logs the user in — they must verify their email
+  // first. The response carries only the created user.
   return useMutation({
     mutationFn: async (body: {
       email: string;
@@ -45,16 +45,53 @@ export function useRegister() {
       firstName: string;
       lastName: string;
     }) => {
-      const res = await apiClient.post<ApiResponse<AuthData>>(
+      const res = await apiClient.post<ApiResponse<{ user: User }>>(
         "/auth/register",
         body,
       );
       return res.data;
     },
-    onSuccess: (data) => {
-      setAuth(data.user, data.accessToken);
-      Cookies.set("mm_authed", "1", { sameSite: "lax" });
+  });
+}
+
+// ---------------------------------------------------------------------------
+// email verification
+// ---------------------------------------------------------------------------
+
+export function useVerifyEmail() {
+  return useMutation({
+    mutationFn: async (token: string) => {
+      const res = await apiClient.post<ApiResponse<{ user: User }>>(
+        "/auth/verify-email",
+        { token },
+      );
+      return res.data;
     },
+  });
+}
+
+export function useResendVerification() {
+  return useMutation({
+    mutationFn: (email: string) =>
+      apiClient.post("/auth/resend-verification", { email }),
+  });
+}
+
+// ---------------------------------------------------------------------------
+// password reset
+// ---------------------------------------------------------------------------
+
+export function useForgotPassword() {
+  return useMutation({
+    mutationFn: (email: string) =>
+      apiClient.post("/auth/forgot-password", { email }),
+  });
+}
+
+export function useResetPassword() {
+  return useMutation({
+    mutationFn: (body: { token: string; password: string }) =>
+      apiClient.post("/auth/reset-password", body),
   });
 }
 

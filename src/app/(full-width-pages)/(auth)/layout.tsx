@@ -2,7 +2,7 @@ import GridShape from "@/components/common/GridShape";
 import ThemeTogglerTwo from "@/components/common/ThemeTogglerTwo";
 
 import { ThemeProvider } from "@/context/ThemeContext";
-import Image from "next/image";
+import { Zap } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
@@ -21,16 +21,17 @@ export default function AuthLayout({
               {/* <!-- ===== Common Grid Shape Start ===== --> */}
               <GridShape />
               <div className="flex flex-col items-center max-w-xs">
-                <Link href="/" className="block mb-4">
-                  <Image
-                    width={231}
-                    height={48}
-                    src="./images/logo/auth-logo.svg"
-                    alt="Logo"
-                  />
+                <Link href="/" className="mb-4 flex items-center gap-3">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-500 shadow-lg">
+                    <Zap size={22} className="text-white" />
+                  </span>
+                  <span className="text-2xl font-bold text-white">
+                    MotionMesh
+                  </span>
                 </Link>
                 <p className="text-center text-gray-400 dark:text-white/60">
-                  Free and Open-Source Tailwind CSS Admin Dashboard Template
+                  See yourself dance — AI-generated videos powered by the
+                  world&apos;s best choreographers.
                 </p>
               </div>
             </div>
