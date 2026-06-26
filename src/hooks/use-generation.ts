@@ -2,8 +2,28 @@
 
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiClient } from "@/lib/api-client";
-import { ApiResponse, GenerationJob } from "@/types/api.types";
+import {
+  ApiResponse,
+  GenerationJob,
+  PresignedUrlData,
+} from "@/types/api.types";
 import { GenerationJobStatus } from "@/types/enums";
+
+// ---------------------------------------------------------------------------
+// POST /ai/face-photo/presigned-url
+// ---------------------------------------------------------------------------
+
+export function useFacePhotoUploadUrl() {
+  return useMutation({
+    mutationFn: async (body: { contentType: string }) => {
+      const res = await apiClient.post<ApiResponse<PresignedUrlData>>(
+        "/ai/face-photo/presigned-url",
+        body,
+      );
+      return res.data;
+    },
+  });
+}
 
 // ---------------------------------------------------------------------------
 // POST /ai/generate
@@ -18,6 +38,21 @@ export function useStartGeneration() {
       const res = await apiClient.post<ApiResponse<GenerationJob>>(
         "/ai/generate",
         body,
+      );
+      return res.data;
+    },
+  });
+}
+
+// ---------------------------------------------------------------------------
+// GET /ai/jobs/:id/download-url
+// ---------------------------------------------------------------------------
+
+export function useResultDownloadUrl() {
+  return useMutation({
+    mutationFn: async (jobId: string) => {
+      const res = await apiClient.get<ApiResponse<{ url: string }>>(
+        `/ai/jobs/${jobId}/download-url`,
       );
       return res.data;
     },
