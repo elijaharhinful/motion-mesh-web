@@ -6,9 +6,11 @@ import { Camera, Pencil } from "lucide-react";
 import {
   useMe,
   useUpdateProfile,
+  useAvatarUploadUrl,
   useForgotPassword,
   useDeleteAccount,
 } from "@/hooks/use-auth";
+import { apiClient } from "@/lib/api-client";
 import { useToastStore } from "@/stores/toast.store";
 import { useModal } from "@/hooks/useModal";
 import { Modal } from "@/components/ui/modal";
@@ -61,7 +63,8 @@ function SocialIcons() {
 export default function ProfilePage() {
   const router = useRouter();
   const { data: user, isLoading } = useMe();
-  const { mutate: update, isPending } = useUpdateProfile();
+  const { mutateAsync: update, isPending } = useUpdateProfile();
+  const { mutateAsync: getAvatarUploadUrl } = useAvatarUploadUrl();
   const { mutate: forgot, isPending: sendingReset } = useForgotPassword();
   const { mutate: deleteAccount, isPending: deleting } = useDeleteAccount();
   const { addToast } = useToastStore();
@@ -71,12 +74,15 @@ export default function ProfilePage() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [savingAvatar, setSavingAvatar] = useState(false);
 
   const onEdit = () => {
     if (user) {
       setFirstName(user.firstName);
       setLastName(user.lastName);
       setAvatarPreview(null);
+      setAvatarFile(null);
     }
     edit.openModal();
   };
@@ -84,23 +90,36 @@ export default function ProfilePage() {
   const onPickAvatar = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    setAvatarFile(file);
     const reader = new FileReader();
     reader.onload = () => setAvatarPreview(reader.result as string);
     reader.readAsDataURL(file);
   };
 
-  const onSave = () => {
-    update(
-      { firstName, lastName },
-      {
-        onSuccess: () => {
-          addToast({ type: "success", title: "Profile updated." });
-          edit.closeModal();
-        },
-        onError: () => addToast({ type: "error", title: "Update failed." }),
-      },
-    );
+  const onSave = async () => {
+    setSavingAvatar(true);
+    try {
+      let avatarS3Key: string | undefined;
+      if (avatarFile) {
+        // Mint a presigned URL, upload the bytes straight to storage, then
+        // persist only the resulting object key.
+        const { url, key } = await getAvatarUploadUrl({
+          contentType: avatarFile.type,
+        });
+        await apiClient.uploadToS3(url, avatarFile);
+        avatarS3Key = key;
+      }
+      await update({ firstName, lastName, avatarS3Key });
+      addToast({ type: "success", title: "Profile updated." });
+      edit.closeModal();
+    } catch {
+      addToast({ type: "error", title: "Update failed." });
+    } finally {
+      setSavingAvatar(false);
+    }
   };
+
+  const saving = isPending || savingAvatar;
 
   const onChangePassword = () => {
     if (!user) return;
@@ -422,8 +441,8 @@ export default function ProfilePage() {
             <Button size="sm" variant="outline" onClick={edit.closeModal}>
               Close
             </Button>
-            <Button size="sm" onClick={onSave} disabled={isPending}>
-              {isPending ? "Saving…" : "Save Changes"}
+            <Button size="sm" onClick={onSave} disabled={saving}>
+              {saving ? "Saving…" : "Save Changes"}
             </Button>
           </div>
         </div>

@@ -3,7 +3,13 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/lib/api-client";
 import { useAuthStore } from "@/stores/auth.store";
-import { ApiResponse, AuthData, RefreshData, User } from "@/types/api.types";
+import {
+  ApiResponse,
+  AuthData,
+  PresignedUrlData,
+  RefreshData,
+  User,
+} from "@/types/api.types";
 import Cookies from "js-cookie";
 
 // ---------------------------------------------------------------------------
@@ -144,13 +150,29 @@ export function useUpdateProfile() {
     mutationFn: async (body: {
       firstName?: string;
       lastName?: string;
-      avatarUrl?: string;
+      avatarS3Key?: string;
     }) => {
       const res = await apiClient.patch<ApiResponse<User>>("/users/me", body);
       return res.data;
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["me"] });
+    },
+  });
+}
+
+// ---------------------------------------------------------------------------
+// POST /users/me/avatar/presigned-url
+// ---------------------------------------------------------------------------
+
+export function useAvatarUploadUrl() {
+  return useMutation({
+    mutationFn: async (body: { contentType: string }) => {
+      const res = await apiClient.post<ApiResponse<PresignedUrlData>>(
+        "/users/me/avatar/presigned-url",
+        body,
+      );
+      return res.data;
     },
   });
 }

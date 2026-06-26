@@ -34,6 +34,12 @@ export enum VideoStatus {
   ARCHIVED = "archived",
 }
 
+export enum VideoSort {
+  NEWEST = "newest",
+  PRICE_ASC = "price_asc",
+  PRICE_DESC = "price_desc",
+}
+
 export enum PurchaseStatus {
   PENDING = "pending",
   SUCCEEDED = "succeeded",

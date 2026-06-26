@@ -68,6 +68,52 @@ export interface DanceVideo {
   updatedAt: string;
 }
 
+// Public marketplace shape. Raw S3 keys (especially the original) are never
+// sent to the client; the API returns signed, time-limited URLs instead.
+export interface PublicVideoCreator {
+  id: string;
+  displayName: string;
+  isVerified: boolean;
+  avatarUrl: string | null;
+}
+
+export interface PublicVideoView {
+  id: string;
+  creatorId: string;
+  title: string;
+  description: string | null;
+  difficulty: VideoDifficulty;
+  category: VideoCategory;
+  priceCents: number;
+  status: VideoStatus;
+  durationSeconds: number | null;
+  thumbnailUrl: string | null;
+  previewUrl: string | null;
+  creator: PublicVideoCreator | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Seller-facing view of their own listing, with upload-completeness flags.
+export interface SellerVideoView {
+  id: string;
+  creatorId: string;
+  title: string;
+  description: string | null;
+  difficulty: VideoDifficulty;
+  category: VideoCategory;
+  priceCents: number;
+  status: VideoStatus;
+  durationSeconds: number | null;
+  thumbnailUrl: string | null;
+  previewUrl: string | null;
+  hasOriginal: boolean;
+  hasPreview: boolean;
+  hasThumbnail: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Purchase {
   id: string;
   userId: string;
